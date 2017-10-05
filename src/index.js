@@ -83,13 +83,21 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const squares = current.squares.slice();
+    const winner = calculateWinner(squares);
 
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      /* There are still empty squares */
+      if (squares.some((square) => {
+        return square !== 'X' && square !== 'O';
+      })) {
+        status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      } else {
+        status = 'Draw';
+      }
     }
 
     const moves = history.map((step, move) => {
