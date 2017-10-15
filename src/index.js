@@ -5,8 +5,6 @@ import './index.css';
 class Square extends React.Component {
   constructor() {
     super();
-
-    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(e) {
@@ -16,7 +14,7 @@ class Square extends React.Component {
 
   render() {
     return (
-      <button className="square" onClick={this.handleClick}>
+      <button className="square" onClick={(e) => this.handleClick(e)}>
         {this.props.value}
       </button>
     );
