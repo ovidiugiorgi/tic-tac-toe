@@ -7,6 +7,8 @@ ol, ul {
   padding-left: 30px;
 }
 
+a { color: rgb(8, 140, 181) }
+
 .board-row:after {
   clear: both;
   content: "";
@@ -47,4 +49,8 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+}
+
+.game-info a.current {
+  font-weight: bold;
 }

@@ -108,9 +108,11 @@ class Game extends React.Component {
         const squareIndex =  step['lastSquareIndex'];
         desc = `Move (${Math.floor(squareIndex / 3) + 1}, ${squareIndex % 3 + 1})`;
       }
+      const currentStep = move === this.state.stepNumber ? 'current' : '';
+
       return (
         <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+          <a href="#" className={currentStep} onClick={() => this.jumpTo(move)}>{desc}</a>
         </li>
       );
     });
