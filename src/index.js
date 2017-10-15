@@ -50,6 +50,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        lastSquareIndex: 0,
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -67,6 +68,7 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
+        lastSquareIndex: i
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -101,9 +103,11 @@ class Game extends React.Component {
     }
 
     const moves = history.map((step, move) => {
-      const desc = move ?
-        'Move #' + move :
-        'Game start';
+      let desc = 'Game start';
+      if (move) {
+        const squareIndex =  step['lastSquareIndex'];
+        desc = `Move (${Math.floor(squareIndex / 3) + 1}, ${squareIndex % 3 + 1})`;
+      }
       return (
         <li key={move}>
           <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
