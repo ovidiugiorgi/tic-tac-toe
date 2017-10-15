@@ -7,14 +7,14 @@ class Square extends React.Component {
     super();
   }
 
-  handleClick(e) {
+  handleClick = (e) => {
     e.preventDefault();
     this.props.onClick();
   }
 
   render() {
     return (
-      <button className="square" onClick={(e) => this.handleClick(e)}>
+      <button className="square" onClick={this.handleClick}>
         {this.props.value}
       </button>
     );
@@ -66,6 +66,29 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
     };
+
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+
+  handleKeyPress = (e) => {
+    // Up and down arrow keys
+    var keys = [38, 40];
+
+    if (keys.includes(e.keyCode)) {
+      e.preventDefault();
+
+      let stepNumber = this.state.stepNumber;
+
+      if (e.keyCode === 38) {
+        // Up key
+        stepNumber = Math.max(0, stepNumber - 1);
+      } else {
+        // Down key
+        stepNumber = Math.min(this.state.history.length - 1, stepNumber + 1);
+      }
+
+      this.jumpTo(stepNumber);
+    }
   }
 
   handleClick(i) {
@@ -91,6 +114,16 @@ class Game extends React.Component {
       stepNumber: step,
       xIsNext: (step % 2) === 0,
     });
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress, false);
+    document.addEventListener("keyup", this.handleKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress, false);
+    document.removeEventListener("keyup", this.handleKeyPress, false);
   }
 
   render() {
