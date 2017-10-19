@@ -3,10 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
-  constructor() {
-    super();
-  }
-
   handleClick = (e) => {
     e.preventDefault();
     this.props.onClick();
@@ -68,6 +64,8 @@ class Game extends React.Component {
     };
 
     this.handleKeyPress = this.handleKeyPress.bind(this);
+
+    this.keyPressThrottle = false;
   }
 
   handleKeyPress = (e) => {
@@ -77,17 +75,25 @@ class Game extends React.Component {
     if (keys.includes(e.keyCode)) {
       e.preventDefault();
 
-      let stepNumber = this.state.stepNumber;
+      if (!this.keyPressThrottle) {
+        this.keyPressThrottle = true;
 
-      if (e.keyCode === 38) {
-        // Up key
-        stepNumber = Math.max(0, stepNumber - 1);
-      } else {
-        // Down key
-        stepNumber = Math.min(this.state.history.length - 1, stepNumber + 1);
+        let stepNumber = this.state.stepNumber;
+
+        if (e.keyCode === 38) {
+          // Up key
+          stepNumber = Math.max(0, stepNumber - 1);
+        } else {
+          // Down key
+          stepNumber = Math.min(this.state.history.length - 1, stepNumber + 1);
+        }
+
+        this.jumpTo(stepNumber);
+
+        setTimeout(() => {
+          this.keyPressThrottle = false;
+        }, 200);
       }
-
-      this.jumpTo(stepNumber);
     }
   }
 
