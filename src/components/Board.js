@@ -12,20 +12,18 @@ export default class Board extends React.Component {
   }
 
   render() {
-    const squares = [];
-    for (let row = 0; row < 3; row++) {
-      const squaresRow = [];
-      for (let col = 0; col < 3; col++) {
-        const index = row * 3 + col;
-        squaresRow.push(this.renderSquare(index));
-      }
-      squares.push(<div key={row} className="board-row"> {squaresRow} </div>)
-    }
-
     return (
       <div>
-      {squares}
+      {[...Array(3)].map((boardRow, row) => {
+        return (
+          <div key={row} className="board-row">
+          {[...Array(3)].map((square, col) => {
+            return this.renderSquare(row * 3 + col);
+          })}
+          </div>
+        )
+      })}
       </div>
-    );
+    )
   }
 }
