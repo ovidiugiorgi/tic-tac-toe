@@ -20,7 +20,7 @@ export default class Game extends React.Component {
     this.keyPressThrottle = false;
   }
 
-  handleKeyPress = (e) => {
+  handleKeyPress(e) {
     // Up and down arrow keys
     var keys = [38, 40];
 
