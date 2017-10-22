@@ -4,7 +4,7 @@ import Square from './Square';
 export default class Board extends React.Component {
   renderSquare(i) {
     return (
-      <Square
+      <Square key={i}
         value = {this.props.squares[i]}
         onClick = {() => this.props.onClick(i)}
       />
@@ -19,7 +19,7 @@ export default class Board extends React.Component {
         const index = row * 3 + col;
         squaresRow.push(this.renderSquare(index));
       }
-      squares.push(<div className="board-row"> {squaresRow} </div>)
+      squares.push(<div key={row} className="board-row"> {squaresRow} </div>)
     }
 
     return (
