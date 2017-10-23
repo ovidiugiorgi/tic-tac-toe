@@ -13,16 +13,32 @@ export default class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      sortAscending: true,
     };
 
     this.handleKeyPress = this.handleKeyPress.bind(this);
-
     this.keyPressThrottle = false;
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress, false);
+    document.addEventListener("keyup", this.handleKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress, false);
+    document.removeEventListener("keyup", this.handleKeyPress, false);
+  }
+
+  areSomeSquaresTicked(squares) {
+    return squares.some((square) => {
+      return square;
+    });
   }
 
   handleKeyPress(e) {
     // Up and down arrow keys
-    var keys = [38, 40];
+    const keys = [38, 40];
 
     if (keys.includes(e.keyCode)) {
       e.preventDefault();
@@ -49,19 +65,26 @@ export default class Game extends React.Component {
     }
   }
 
-  handleClick(i) {
+  handleSquareClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
+    const current = history[this.state.sortAscending ? history.length - 1 : 0];
     const squares = current.squares.slice();
+
     if (Utils.calculateWinner(squares) || squares[i]) {
       return;
     }
+
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+    const step = {
+      squares: squares,
+      lastSquareIndex: i,
+    };
+
     this.setState({
-      history: history.concat([{
-        squares: squares,
-        lastSquareIndex: i
-      }]),
+      history: this.state.sortAscending
+        ? history.concat([step])
+        : [step].concat(history),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
@@ -74,18 +97,26 @@ export default class Game extends React.Component {
     });
   }
 
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyPress, false);
-    document.addEventListener("keyup", this.handleKeyPress, false);
+  handleMovesBtnClick() {
+    this.setState({
+      stepNumber: this.state.sortAscending ? this.state.stepNumber : this.state.history.length - this.state.stepNumber - 1,
+      sortAscending: !this.state.sortAscending,
+    });
   }
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyPress, false);
-    document.removeEventListener("keyup", this.handleKeyPress, false);
+  hasEmptySquares(squares) {
+    return squares.some((square) => {
+      return square !== 'X' && square !== 'O'
+    });
   }
 
   render() {
     const history = this.state.history;
+    if ((!this.state.sortAscending && !this.areSomeSquaresTicked(history[0].squares.slice()))
+      || (this.state.sortAscending && this.areSomeSquaresTicked(history[0].squares.slice()))) {
+      history.reverse();
+    }
+
     const current = history[this.state.stepNumber];
     const squares = current.squares.slice();
     const winner = Utils.calculateWinner(squares);
@@ -94,10 +125,11 @@ export default class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      /* There are still empty squares */
-      if (squares.some((square) => {
-        return square !== 'X' && square !== 'O';
-      })) {
+      const hasEmptySquares = squares.some((square) => {
+        return !square;
+      });
+
+      if (hasEmptySquares) {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       } else {
         status = 'Draw';
@@ -106,15 +138,25 @@ export default class Game extends React.Component {
 
     const moves = history.map((step, move) => {
       let desc = 'Game start';
-      if (move) {
+
+      if (this.areSomeSquaresTicked(step.squares)) {
         const squareIndex =  step['lastSquareIndex'];
         desc = `Move (${Math.floor(squareIndex / 3) + 1}, ${squareIndex % 3 + 1})`;
       }
-      const currentStep = move === this.state.stepNumber ? 'current' : '';
+
+      const actualStep = this.state.sortAscending
+        ? this.state.stepNumber
+        : this.state.history.length - this.state.stepNumber - 1
 
       return (
         <li key={move}>
-          <a href="#" className={currentStep} onClick={() => this.jumpTo(move)}>{desc}</a>
+          <a href="#" className={move === this.state.stepNumber ? 'current' : ''}
+            onClick={() => {
+
+              this.jumpTo(move);
+            }}>
+            {desc}
+          </a>
         </li>
       );
     });
@@ -124,11 +166,14 @@ export default class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
+            onClick={(i) => this.handleSquareClick(i)}
           />
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button onClick={() => this.handleMovesBtnClick()}>
+            {this.state.sortAscending ? 'Sort descending' : 'Sort ascending'}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
