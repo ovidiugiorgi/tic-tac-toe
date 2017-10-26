@@ -66,7 +66,9 @@ export default class Game extends React.Component {
   }
 
   handleSquareClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = this.state.sortAscending
+      ? this.state.history.slice(0, this.state.stepNumber + 1)
+      : this.state.history.slice(this.state.stepNumber);
     const current = history[this.state.sortAscending ? history.length - 1 : 0];
     const squares = current.squares.slice();
 
@@ -85,7 +87,7 @@ export default class Game extends React.Component {
       history: this.state.sortAscending
         ? history.concat([step])
         : [step].concat(history),
-      stepNumber: history.length,
+      stepNumber: this.state.sortAscending ? history.length : 0,
       xIsNext: !this.state.xIsNext,
     });
   }
@@ -93,14 +95,19 @@ export default class Game extends React.Component {
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      xIsNext: (step % 2) === 0,
+      xIsNext: ((step) => {
+        return step % 2 == 0;
+      })(this.state.sortAscending ? step : this.state.history.length - step - 1),
     });
   }
 
   handleMovesBtnClick() {
+    const sortAscending = !this.state.sortAscending;
+    const history = this.state.history;
+
     this.setState({
-      stepNumber: this.state.sortAscending ? this.state.stepNumber : this.state.history.length - this.state.stepNumber - 1,
-      sortAscending: !this.state.sortAscending,
+      history: history.reverse(),
+      sortAscending: sortAscending,
     });
   }
 
@@ -112,11 +119,6 @@ export default class Game extends React.Component {
 
   render() {
     const history = this.state.history;
-    if ((!this.state.sortAscending && !this.areSomeSquaresTicked(history[0].squares.slice()))
-      || (this.state.sortAscending && this.areSomeSquaresTicked(history[0].squares.slice()))) {
-      history.reverse();
-    }
-
     const current = history[this.state.stepNumber];
     const squares = current.squares.slice();
     const winner = Utils.calculateWinner(squares);
@@ -144,15 +146,10 @@ export default class Game extends React.Component {
         desc = `Move (${Math.floor(squareIndex / 3) + 1}, ${squareIndex % 3 + 1})`;
       }
 
-      const actualStep = this.state.sortAscending
-        ? this.state.stepNumber
-        : this.state.history.length - this.state.stepNumber - 1
-
       return (
         <li key={move}>
           <a href="#" className={move === this.state.stepNumber ? 'current' : ''}
             onClick={() => {
-
               this.jumpTo(move);
             }}>
             {desc}
