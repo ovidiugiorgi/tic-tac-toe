@@ -54,3 +54,27 @@ a { color: rgb(8, 140, 181) }
 .game-info a.current {
   font-weight: bold;
 }
+
+.toggle-btn {
+  margin-top: 10px;
+}
+
+.toggle-btn .container {
+  width: 40px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.toggle-btn .container > div {
+  height: 100%;
+  width: 50%;
+  background-color: blue;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.toggle-btn .container > div.on {
+  float: right;
+}

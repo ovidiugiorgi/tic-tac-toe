@@ -1,6 +1,7 @@
 import React from 'react';
-import Board from './Board';
 import Utils from '../helpers/Utils'
+import Board from './Board';
+import ToggleButton from './ToggleButton'
 
 export default class Game extends React.Component {
   constructor() {
@@ -101,7 +102,7 @@ export default class Game extends React.Component {
     });
   }
 
-  handleMovesBtnClick() {
+  sortMoves() {
     const sortAscending = !this.state.sortAscending;
     const history = this.state.history;
 
@@ -168,9 +169,7 @@ export default class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <button onClick={() => this.handleMovesBtnClick()}>
-            {this.state.sortAscending ? 'Sort descending' : 'Sort ascending'}
-          </button>
+          <ToggleButton text="Sort" onClick={() => this.sortMoves()} />
           <ol>{moves}</ol>
         </div>
       </div>
