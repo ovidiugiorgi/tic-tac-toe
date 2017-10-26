@@ -97,7 +97,7 @@ export default class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: ((step) => {
-        return step % 2 == 0;
+        return step % 2 === 0;
       })(this.state.sortAscending ? step : this.state.history.length - step - 1),
     });
   }
