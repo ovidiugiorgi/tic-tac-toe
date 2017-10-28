@@ -23,8 +23,8 @@ export default class ToggleButton extends React.Component {
     return (
       <div className="toggle-btn">
         <span>{this.props.text}</span>
-        <div className="container">
-          <div className={this.state.isOn ? 'on' : 'off'} onClick={this.handleClick} />
+        <div className="container" onClick={this.handleClick}>
+          <div className={this.state.isOn ? 'on' : 'off'} />
         </div>
       </div>
     );
