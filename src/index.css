@@ -33,10 +33,15 @@ a { color: rgb(8, 140, 181) }
   text-align: center;
   width: 34px;
   cursor: pointer;  
+  transition: background 0.5s ease-in;
 }
 
 .square:focus {
   outline: none;
+}
+
+.square.highlight {
+  background: #fdd648;
 }
 
 .kbd-navigation .square:focus {

@@ -126,7 +126,7 @@ export default class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'Winner: ' + squares[winner[0]];
     } else {
       const hasEmptySquares = squares.some((square) => {
         return !square;
@@ -163,7 +163,12 @@ export default class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board
-            squares={current.squares}
+            squares={current.squares.map((square, i) => {
+              return {
+                value: square,
+                highlight: winner ? ~winner.indexOf(i) : false,
+              }
+            })}
             onClick={(i) => this.handleSquareClick(i)}
           />
         </div>
