@@ -7,10 +7,11 @@ export default class Square extends React.Component {
   }
 
   render() {
-    const baseCSSClass = 'square';
+    const highlight = this.props.highlight ? 'highlight': '';
+    const classes = `square ${highlight}`;
 
     return (
-      <button className={this.props.highlight ? baseCSSClass + " highlight" : baseCSSClass} onClick={this.handleClick}>
+      <button className={classes} onClick={this.handleClick}>
         {this.props.value}
       </button>
     );
